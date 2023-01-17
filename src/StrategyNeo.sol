@@ -64,7 +64,7 @@ contract StrategyNeo is StratManager, FeeManager {
         onCSR = false;
         want = _want;
         harvestOnDeposit = true;
-        harvestOnWithdraw = false;
+        harvestOnWithdraw = true;
         output = _output;
         token1 = _token1;
         token2 = _token2;
