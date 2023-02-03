@@ -89,6 +89,7 @@ contract NeoVaultV7 is ERC20Upgradeable, OwnableUpgradeable, ReentrancyGuardUpgr
         assert(!CSRed);
         turnstile  = Turnstile(CSRadd);
         uint256 TokenId = turnstile.register(owner());
+        CSRed = true;
         emit alreadyCSRed(TokenId);
     }
     /**
@@ -101,6 +102,7 @@ contract NeoVaultV7 is ERC20Upgradeable, OwnableUpgradeable, ReentrancyGuardUpgr
         assert(!CSRed);
         turnstile  = Turnstile(CSRadd);
         uint256 TokenId = turnstile.assign(_tokenId);
+        CSRed = true;
         emit alreadyCSRed(TokenId);
     }
 
