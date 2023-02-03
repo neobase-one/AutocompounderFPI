@@ -12,6 +12,7 @@ import "./interfaces/IStrategyV7.sol";
 // File: Turnstile.sol, used for register CSR in the future.
 interface Turnstile {
     function register(address) external returns(uint256);
+    function assign(uint256) external returns (uint256);
 }
 
 /**
@@ -51,7 +52,7 @@ contract NeoVaultV7 is ERC20Upgradeable, OwnableUpgradeable, ReentrancyGuardUpgr
         uint256 approvalDelay
     );
     //When CSR is registered, this event is triggered.
-    event alreadyCSRed(address CSRAddress);
+    event alreadyCSRed(uint256 TokenID);
 
     constructor() {
         creator = msg.sender;
@@ -79,13 +80,30 @@ contract NeoVaultV7 is ERC20Upgradeable, OwnableUpgradeable, ReentrancyGuardUpgr
 
         emit NeoVaultV7Initialized(strategy, _name, _symbol, approvalDelay);
     }
-
-    function change2CSR(address CSRadd) external nonReentrant{
+    /**
+     * @dev Registers the Contract for CSR.
+     * @param CSRadd the address of the Turnstile Contract.
+     */
+    function registerCSR(address CSRadd) external nonReentrant{
         assert(msg.sender == owner());
         assert(!CSRed);
         turnstile  = Turnstile(CSRadd);
-        turnstile.register(owner());
-        emit alreadyCSRed(CSRadd);
+        uint256 TokenId = turnstile.register(owner());
+        CSRed = true;
+        emit alreadyCSRed(TokenId);
+    }
+    /**
+     * @dev Register the Contract for CSR with the CSR NFT.
+     * @param CSRadd the address of the Turnstile Contract.
+     * @param _tokenId the ID of CSR NFT you want to assign CSR to.
+     */
+    function assignCSR(address CSRadd, uint256 _tokenId) external nonReentrant{
+        assert(msg.sender == owner());
+        assert(!CSRed);
+        turnstile  = Turnstile(CSRadd);
+        uint256 TokenId = turnstile.assign(_tokenId);
+        CSRed = true;
+        emit alreadyCSRed(TokenId);
     }
 
     /**
